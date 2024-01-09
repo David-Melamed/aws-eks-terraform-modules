@@ -1,0 +1,19 @@
+name: "EKS-Lab"
+on:
+  workflow_dispatch:
+
+jobs:
+  Plan:
+    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_plan.yml@main
+    with: 
+      gh_environment: eks_lab
+    secrets:
+      cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+
+  Apply:
+    needs: Plan
+    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_appy.yml@main
+    with:
+      gh_environment: eks_lab
+    secrets:
+      cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
