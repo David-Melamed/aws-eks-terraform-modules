@@ -19,7 +19,7 @@ jobs:
   Apply:
     needs: Plan
     if: ${{ github.event.inputs.apply_flag == 'true' }}
-    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_appy.yml@main
+    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_apply.yml@main
     with:
       gh_environment: eks_lab
     secrets:
