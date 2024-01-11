@@ -26,21 +26,20 @@ backend "remote" {
 	}
 }
 
+/*
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_id
 }
-
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_id
 }
-
 provider "kubernetes" {
   cluster_ca_certificate = base64decode(module.eks.kubeconfig-certificate-authority-data)
   host                   = data.aws_eks_cluster.cluster.endpoint
   token                  = data.aws_eks_cluster_auth.cluster.token
 
 }
-
+*/
 
 provider "aws" {
   region = "eu-west-1"
