@@ -39,7 +39,7 @@ module "david_iam_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "5.3.1"
 
-  name                          = "david"
+  name                          = "davideks"
   create_iam_access_key         = true
   create_iam_user_login_profile = false
 

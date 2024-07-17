@@ -24,8 +24,8 @@ module "eks" {
   }
 
   eks_managed_node_groups = {
-    subnet_ids = module.vpc.private_subnets
     webapp = {
+      subnet_ids = module.vpc.private_subnets
       create_security_group = false
       node_group = {
         min_size     = 2  

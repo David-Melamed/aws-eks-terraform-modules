@@ -10,6 +10,6 @@ output "acm_certificate_arn" {
   value = aws_acm_certificate.webapp.arn
 }
 
-output "cert_validation" {
-  value = [for record in aws_route53_record.cert_validation : record.fqdn]
+output "certificate-arn" {
+  value = aws_acm_certificate.webapp.arn
 }
