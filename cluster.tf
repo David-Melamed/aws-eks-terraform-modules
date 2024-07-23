@@ -79,3 +79,10 @@ module "eks" {
     }
   }
 }
+
+resource "null_resource" "list_load_balancers_on_destroy" {
+  provisioner "local-exec" {
+    when    = destroy
+    command = "bash ${path.module}/scripts/delete_lbs.sh"
+  }
+}
