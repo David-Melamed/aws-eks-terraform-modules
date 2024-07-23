@@ -78,3 +78,12 @@ module "eks_admins_iam_group" {
   group_users                       = [module.david_iam_user.iam_user_name]
   custom_group_policy_arns          = [module.allow_assume_eks_admins_iam_policy.arn]
 }
+
+module "aws_lb_controller_iam_policy" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
+  version = "5.3.1"
+
+  name          = "AWSLoadBalancerControllerIAMPolicy"
+  create_policy = true
+  policy = file("${path.root}/yamls/lb-controller-policy.json")
+}
