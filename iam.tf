@@ -87,3 +87,37 @@ module "aws_lb_controller_iam_policy" {
   create_policy = true
   policy = file("${path.root}/yamls/lb-controller-policy.json")
 }
+
+data "aws_iam_openid_connect_provider" "oidc" {
+  url = module.eks.cluster_oidc_issuer_url
+}
+
+module "iam_eks_lb_controller_role" {
+  source    = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version   = "5.3.1"
+
+  role_name = "AmazonEKSLoadBalancerControllerRole"
+
+  role_policy_arns = {
+    policy = module.aws_lb_controller_iam_policy.arn
+  }
+
+  oidc_providers = {
+    one = {
+      provider_arn               = data.aws_iam_openid_connect_provider.oidc.arn
+      namespace_service_accounts = ["kube-system:aws-load-balancer-controller"]
+    }
+  }
+  tags = {
+    Role                                = "AmazonEKSLoadBalancerControllerRole"
+    "alpha.eksctl.io/cluster-name"                = module.eks.cluster_name
+    "alpha.eksctl.io/iamserviceaccount-name"      = "kube-system/aws-load-balancer-controller"
+    "alpha.eksctl.io/eksctl-version"              = "0.167.0"
+    "eksctl.cluster.k8s.io/v1alpha1/cluster-name" = module.eks.cluster_name
+  }
+}
+
+
+
+
+
