@@ -85,7 +85,7 @@ module "aws_lb_controller_iam_policy" {
 
   name          = "AWSLoadBalancerControllerIAMPolicy"
   create_policy = true
-  policy = file("${path.root}/yamls/lb-controller-policy.json")
+  policy = file("${path.root}/deployment/lb-controller-policy.json")
 }
 
 data "aws_iam_openid_connect_provider" "oidc" {
