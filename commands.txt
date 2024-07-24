@@ -15,12 +15,11 @@ export ARGO_PWD=`kubectl -n argocd get secret argocd-initial-admin-secret -o jso
 argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --insecure
 
 
-##Create IAM Role using eksctl
-eksctl create iamserviceaccount --cluster=ekslab --namespace=kube-system --name=aws-load-balancer-controller --attach-policy-arn=arn:aws:iam::<ACCOUNT_ID>:policy/AWSLoadBalancerControllerIAMPolicy --role-name AmazonEKSLoadBalancerControllerRole --approve
-
+##Create aws-load-balancer-controller iam service account
+kubectl apply -f yamls/aws-load-balancer-controller-sa.yaml
 
 ## Instal aws-load-balancer-controller
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=ekslab --set serviceAccount.create=false --set region=eu-west-1 --set vpcId=vpc-0034e4aeb0deaa837 --set serviceAccount.name=aws-load-balancer-controller -n kube-system
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller --set clusterName=ekslab --set serviceAccount.create=false --set region=eu-west-1 --set vpcId=vpc-0550d73b8d8d89985 --set serviceAccount.name=aws-load-balancer-controller -n kube-system
 
 
 ##Verification
