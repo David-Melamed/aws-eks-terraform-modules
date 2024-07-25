@@ -109,12 +109,14 @@ module "iam_eks_lb_controller_role" {
     }
   }
   tags = {
-    Role                                = "AmazonEKSLoadBalancerControllerRole"
+    Role                                          = "AmazonEKSLoadBalancerControllerRole"
     "alpha.eksctl.io/cluster-name"                = module.eks.cluster_name
     "alpha.eksctl.io/iamserviceaccount-name"      = "kube-system/aws-load-balancer-controller"
     "alpha.eksctl.io/eksctl-version"              = "0.167.0"
     "eksctl.cluster.k8s.io/v1alpha1/cluster-name" = module.eks.cluster_name
   }
+
+  depends_on = [ module.eks ]
 }
 
 
