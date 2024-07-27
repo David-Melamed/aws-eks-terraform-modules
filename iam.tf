@@ -90,6 +90,7 @@ module "aws_lb_controller_iam_policy" {
 
 data "aws_iam_openid_connect_provider" "oidc" {
   url = module.eks.cluster_oidc_issuer_url
+  depends_on = [ module.eks ]
 }
 
 module "iam_eks_lb_controller_role" {
