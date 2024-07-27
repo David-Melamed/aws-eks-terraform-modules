@@ -1,12 +1,3 @@
-resource "null_resource" "update_kubeconfig" {
-  provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --role-arn ${module.eks.cluster_iam_role_arn}"
-  }
-
-  depends_on = [module.eks]
-}
-
-
 resource "helm_release" "argocd" {
   name = "argocd"
 
@@ -20,7 +11,7 @@ resource "helm_release" "argocd" {
     file("${path.root}/deployment/argocd.yaml")
   ]
 
-  depends_on = [ null_resource.update_kubeconfig ]
+  depends_on = [ null_resource.cluster_configured ]
 }
 
 
@@ -35,12 +26,7 @@ resource "null_resource" "argo_portfoward" {
 
 resource "null_resource" "argo_login" {
   provisioner "local-exec" {
-    command = <<EOT
-      ARGOCD_SERVER=$(kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname')
-      ARGO_PWD=$(kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-      sleep 15
-      argocd login $ARGOCD_SERVER --username admin --password $ARGO_PWD --insecure
-      EOT
+    command = "bash ${path.module}/scripts/argocd_login.sh"
   }
 
   depends_on = [null_resource.argo_portfoward]
