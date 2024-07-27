@@ -86,3 +86,20 @@ resource "null_resource" "list_load_balancers_on_destroy" {
     command = "bash ${path.module}/scripts/delete_lbs.sh"
   }
 }
+
+resource "null_resource" "update_kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --name ${module.eks.cluster_name} --role-arn ${module.eks.cluster_iam_role_arn}"
+  }
+
+  depends_on = [module.eks]
+}
+
+resource "null_resource" "cluster_configured" {
+  depends_on = [null_resource.update_kubeconfig]
+
+  # Use triggers to force recreation if the kubeconfig is updated
+  triggers = {
+    kubeconfig_updated = "${null_resource.update_kubeconfig.id}"
+  }
+}
