@@ -14,6 +14,12 @@ global:
 server:
   service:
     type: LoadBalancer
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+      service.beta.kubernetes.io/aws-load-balancer-subnets: "${subnet_ids}"
+    loadBalancerSourceRanges:
+      - 0.0.0.0/0
+
   extraArgs:
 
 ## ApplicationSet controller

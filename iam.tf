@@ -119,8 +119,3 @@ module "iam_eks_lb_controller_role" {
 
   depends_on = [ module.eks ]
 }
-
-
-
-
-

@@ -8,7 +8,9 @@ resource "helm_release" "argocd" {
   create_namespace = true
 
   values = [
-    file("${path.root}/deployment/argocd.yaml")
+    templatefile("${path.root}/deployment/argocd.yaml", {
+      subnet_ids = join(",", module.vpc.public_subnets)
+    })
   ]
 
   depends_on = [ null_resource.cluster_configured ]
