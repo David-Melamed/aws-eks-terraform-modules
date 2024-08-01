@@ -3,7 +3,7 @@ resource "helm_release" "argocd" {
 
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
-  namespace        = "argocd"
+  namespace        = "argocd" 
   version          = "5.46.0"
   create_namespace = true
 
@@ -31,5 +31,10 @@ resource "null_resource" "argo_login" {
     command = "bash ${path.module}/scripts/argocd_login.sh"
   }
 
-  depends_on = [null_resource.argo_portfoward]
+  depends_on = [null_resource.argo_portfoward, aws_iam_role.eks_cluster_role]
+}
+
+data "external" "argocd_lb_hostname" {
+  program = ["bash", "${path.module}/scripts/fetch_argocd_lb_hostname.sh"]
+  depends_on = [ null_resource.argo_login ]
 }

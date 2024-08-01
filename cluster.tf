@@ -6,6 +6,7 @@ module "eks" {
   subnet_ids = concat(module.vpc.private_subnets, module.vpc.public_subnets)
   cluster_endpoint_public_access = true
   create_node_security_group = true
+  depends_on = [ aws_security_group.all_worker_mgmt ]
 
   enable_irsa = true
 
@@ -45,7 +46,7 @@ module "eks" {
       }
     }
   }
-  cluster_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
+  # cluster_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
   enable_cluster_creator_admin_permissions = false
 
   access_entries = {

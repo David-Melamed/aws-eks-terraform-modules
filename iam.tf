@@ -119,3 +119,39 @@ module "iam_eks_lb_controller_role" {
 
   depends_on = [ module.eks ]
 }
+
+
+
+data "aws_iam_policy_document" "eks_assume_role_policy" {
+  statement {
+    sid     = "EKSClusterAssumeRole"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["eks.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid     = "AllowDavidAssumeRole"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/david"]
+    }
+  }
+}
+
+# import {
+#   to = aws_iam_role.eks_cluster_role
+#   id = module.eks.cluster_iam_role_name
+# }
+
+resource "aws_iam_role" "eks_cluster_role" {
+  name               = module.eks.cluster_iam_role_name
+  assume_role_policy = data.aws_iam_policy_document.eks_assume_role_policy.json
+  
+  depends_on = [ module.eks ]
+}
