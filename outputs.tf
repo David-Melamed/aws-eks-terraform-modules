@@ -17,3 +17,7 @@ output "acm_certificate_arn" {
 output "certificate-arn" {
   value = aws_acm_certificate.webapp.arn
 }
+
+output "argocd_lb_hostname" {
+  value = data.external.argocd_lb_hostname.result["argocd_lb_hostname"]
+}
