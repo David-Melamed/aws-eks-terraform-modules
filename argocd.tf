@@ -1,11 +1,11 @@
 resource "helm_release" "argocd" {
-  name = "argocd"
-
+  name = "argocd" 
   repository       = "https://argoproj.github.io/argo-helm"
   chart            = "argo-cd"
   namespace        = "argocd" 
   version          = "5.46.0"
   create_namespace = true
+  timeout = 600 
 
   values = [
     templatefile("${path.root}/deployment/argocd.yaml", {
@@ -13,7 +13,8 @@ resource "helm_release" "argocd" {
     })
   ]
 
-  depends_on = [ null_resource.cluster_configured ]
+  depends_on = [ null_resource.cluster_configured, null_resource.update_trust_policy ]
+
 }
 
 
@@ -22,6 +23,7 @@ resource "null_resource" "argo_portfoward" {
     command = "nohup kubectl port-forward svc/argocd-server -n argocd 8080:443 > /dev/null 2>&1 &"
 
   }
+  
   depends_on = [helm_release.argocd]
 }
 
@@ -31,10 +33,5 @@ resource "null_resource" "argo_login" {
     command = "bash ${path.module}/scripts/argocd_login.sh"
   }
 
-  depends_on = [null_resource.argo_portfoward, aws_iam_role.eks_cluster_role]
-}
-
-data "external" "argocd_lb_hostname" {
-  program = ["bash", "${path.module}/scripts/fetch_argocd_lb_hostname.sh"]
-  depends_on = [ null_resource.argo_login ]
+  depends_on = [null_resource.argo_portfoward]
 }
