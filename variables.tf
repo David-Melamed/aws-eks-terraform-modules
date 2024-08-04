@@ -13,12 +13,6 @@ variable "domain_name" {
   description = "Registrar domain name"
 }
 
-variable "eks_iam_username" {
-  description = "List of IAM usernames to allow access to EKS cluster"
-  type        = string
-  default     = "david"
-}
-
 variable "cluster_iam_username" {
   description = "IAM username to access EKS cluster"
   type        = list(string)
