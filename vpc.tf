@@ -16,6 +16,7 @@ module "vpc" {
   tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared",
     "Environment" = "staging"
+    "ClusterName"        = local.cluster_name
   }
 
   public_subnet_tags = {
