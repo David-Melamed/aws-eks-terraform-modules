@@ -10,7 +10,7 @@ module "lb_role" {
         }
     }
 
-    depends_on = [ module.eks ]
+    depends_on = [ null_resource.cluster_configured, null_resource.update_trust_policy ]
 }
 
 resource "kubernetes_service_account" "service-account" {
