@@ -18,6 +18,6 @@ output "certificate-arn" {
   value = aws_acm_certificate.webapp.arn
 }
 
-output "argocd_lb_hostname" {
-  value = data.external.argocd_lb_hostname.result["argocd_lb_hostname"]
+output "eks_cluster_role_name" {
+  value = module.eks.cluster_iam_role_name
 }
