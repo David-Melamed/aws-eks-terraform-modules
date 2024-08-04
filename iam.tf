@@ -51,7 +51,7 @@ module "allow_assume_eks_admins_iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.3.1"
 
-  name          = "eks-admin-role"
+  name          = "eks-admin-policy"
   create_policy = true
 
   policy = jsonencode({
@@ -138,7 +138,7 @@ resource "null_resource" "update_trust_policy" {
             "Sid": "AllowDavidAssumeRole",
             "Effect": "Allow",
             "Principal": {
-              "AWS": "arn:aws:iam::'${data.aws_caller_identity.current.account_id}':user/'${var.eks_iam_username}'"
+              "AWS": "arn:aws:iam::'${data.aws_caller_identity.current.account_id}':user/david"
             },
             "Action": "sts:AssumeRole"
           }
