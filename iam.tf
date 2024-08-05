@@ -35,15 +35,15 @@ module "eks_admins_iam_role" {
 }
 
 
-module "david_iam_user" {
+module "eks_admin_user" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-user"
   version = "5.3.1"
+  for_each = toset(var.cluster_iam_username)
 
-  name                          = "davideks"
+  name                          = each.key
   create_iam_access_key         = true
   create_iam_user_login_profile = false
-
-  force_destroy = true
+  force_destroy                 = true
 }
 
 
@@ -51,7 +51,7 @@ module "allow_assume_eks_admins_iam_policy" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-policy"
   version = "5.3.1"
 
-  name          = "allow-assume-eks-admin-iam-role"
+  name          = "eks-admin-policy"
   create_policy = true
 
   policy = jsonencode({
@@ -75,7 +75,7 @@ module "eks_admins_iam_group" {
   name                              = "eks-admin"
   attach_iam_self_management_policy = false
   create_group                      = true
-  group_users                       = [module.david_iam_user.iam_user_name]
+  group_users                       = var.cluster_iam_username
   custom_group_policy_arns          = [module.allow_assume_eks_admins_iam_policy.arn]
 }
 
@@ -120,38 +120,32 @@ module "iam_eks_lb_controller_role" {
   depends_on = [ module.eks ]
 }
 
-
-
-data "aws_iam_policy_document" "eks_assume_role_policy" {
-  statement {
-    sid     = "EKSClusterAssumeRole"
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["eks.amazonaws.com"]
-    }
+resource "null_resource" "update_trust_policy" {
+  provisioner "local-exec" {
+    command = <<EOT
+      aws iam update-assume-role-policy --role-name '${module.eks.cluster_iam_role_name}' --policy-document '{
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "EKSClusterAssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+              "Service": "eks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+          },
+          {
+            "Sid": "AllowDavidAssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::'${data.aws_caller_identity.current.account_id}':user/david"
+            },
+            "Action": "sts:AssumeRole"
+          }
+        ]
+      }'
+    EOT
   }
 
-  statement {
-    sid     = "AllowDavidAssumeRole"
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/david"]
-    }
-  }
-}
-
-# import {
-#   to = aws_iam_role.eks_cluster_role
-#   id = module.eks.cluster_iam_role_name
-# }
-
-resource "aws_iam_role" "eks_cluster_role" {
-  name               = module.eks.cluster_iam_role_name
-  assume_role_policy = data.aws_iam_policy_document.eks_assume_role_policy.json
-  
-  depends_on = [ module.eks ]
+  depends_on = [module.eks]
 }
