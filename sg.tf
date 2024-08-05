@@ -27,15 +27,3 @@ resource "aws_security_group_rule" "all_worker_mgmt_egress" {
   type              = "egress"
   cidr_blocks       = ["0.0.0.0/0"]
 }
-
-resource "null_resource" "delete_security_groups" {
-  triggers = {
-    vpc_id = module.vpc.name
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      aws ec2 describe-security-groups --filters "Name=vpc-id,Values=${self.triggers.vpc_id}" --query 'SecurityGroups[?GroupName!=`default`].GroupId' --output text | xargs -n 1 aws ec2 delete-security-group --group-id 
-    EOT
-  }
-}
