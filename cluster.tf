@@ -6,7 +6,7 @@ module "eks" {
   subnet_ids = concat(module.vpc.private_subnets, module.vpc.public_subnets)
   cluster_endpoint_public_access = true
   create_node_security_group = true
-  depends_on = [ aws_security_group.all_worker_mgmt ]
+  depends_on = [ aws_security_group.all_worker_mgmt, module.vpc ]
 
   enable_irsa = true
 

@@ -148,4 +148,8 @@ resource "null_resource" "update_trust_policy" {
   }
 
   depends_on = [module.eks]
+
+  triggers = {
+    timestamp = timestamp()
+  }
 }

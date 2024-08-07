@@ -37,3 +37,6 @@ terraform.rc
 .terraform.lock.hcl
 .terraform.tfstate*
 terraform.tfstate*
+
+#backend tf file
+backend.tf

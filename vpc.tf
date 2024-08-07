@@ -12,7 +12,6 @@ module "vpc" {
   enable_dns_hostnames = true
   enable_dns_support   = true
   one_nat_gateway_per_az = false
-
   tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared",
     "Environment" = "staging"
@@ -28,4 +27,7 @@ module "vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
   }
+
+depends_on = [ module.terraform_state_backend ]
+
 }
