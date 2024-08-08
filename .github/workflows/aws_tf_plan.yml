@@ -33,6 +33,7 @@ jobs:
     environment: ${{ inputs.gh_environment }}
     permissions:
       contents: read
+      pull-request: write
     defaults:
       run:
         shell: bash    
