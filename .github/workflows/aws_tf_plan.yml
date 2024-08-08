@@ -5,22 +5,19 @@ on:
     inputs:
       tf_version:
         description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
-        required: false
+        required: true
         type: string
-        default: latest
       gh_environment:
         description: 'Specifies the GitHub deployment environment.'
-        required: false
+        required: true
         type: string
-        default: null
       region:
         description: 'Choose the AWS region to deploy to.'
         required: true
         type: string
-        default: null
     secrets:
       cli_config_credentials_token:
-        description: 'cli config credentials token'
+        description: 'CLI config credentials token'
         required: true
       aws_access_key_id:
         description: 'AWS Access Key ID'
@@ -36,7 +33,7 @@ jobs:
     environment: ${{ inputs.gh_environment }}
     permissions:
       contents: read
-      pull-requests: write
+      pull-request: write
     defaults:
       run:
         shell: bash    

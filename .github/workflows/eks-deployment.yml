@@ -1,8 +1,6 @@
 name: "ProvisionEKSCluster"
 
 on:
-  pull_request:
-    types: [opened, reopened]
   workflow_dispatch:
     inputs:
       apply_flag:
@@ -11,17 +9,16 @@ on:
         default: 'false'
       tf_version:
         description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
-        required: false
-        default: 'latest'
+        required: true
       gh_environment:
         description: 'Specifies the GitHub deployment environment.'
-        required: false
-        default: 'development'
+        required: true
       region:
         description: 'Choose the AWS region to deploy to.'
         required: true
-        default: 'eu-west-1'
-        
+  pull_request:
+    types: [opened, reopened]
+
 jobs:
   Plan:
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
@@ -33,6 +30,9 @@ jobs:
       cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    permissions:
+      pull-requests: write
+      contents: read
 
   Apply:
     needs: Plan
@@ -46,3 +46,6 @@ jobs:
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
+    permissions:
+      pull-requests: write
+      contents: read
