@@ -22,7 +22,7 @@ on:
 jobs:
   Plan:
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
-    with: 
+    with:
       tf_version: ${{ github.event.inputs.tf_version }}
       gh_environment: ${{ github.event.inputs.gh_environment }}
       region: ${{ github.event.inputs.region }}
@@ -43,9 +43,9 @@ jobs:
       gh_environment: ${{ github.event.inputs.gh_environment }}
       region: ${{ github.event.inputs.region }}
     secrets:
+      cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
       aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
     permissions:
       pull-requests: write
       contents: read
