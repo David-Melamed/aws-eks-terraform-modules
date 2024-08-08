@@ -13,22 +13,44 @@ on:
         required: false
         type: string
         default: null
+      region:
+        description: 'Choose the AWS region to deploy to.'
+        required: true
+        type: string
+        default: null
     secrets:
       cli_config_credentials_token:
         description: 'cli config credentials token'
         required: true
+      aws_access_key_id:
+        description: 'AWS Access Key ID'
+        required: true
+      aws_secret_access_key:
+        description: 'AWS Secret Access Key'
+        required: true
 
 jobs:
   build-plan:
+    name: "Terraform Plan"
     runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
+    permissions:
+      contents: read
+      pull-requests: write
     defaults:
       run:
         shell: bash    
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
-        
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: ${{ inputs.region }}
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.2
         with:
@@ -46,7 +68,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: terraform plan
-        continue-on-error: true
 
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
