@@ -1,4 +1,4 @@
-name: "EKS-Lab"
+name: "ProvisionEKSCluster"
 
 on:
   workflow_dispatch:
@@ -7,20 +7,40 @@ on:
         description: 'Set to "true" to apply changes after plan'
         required: true
         default: 'false'
+      tf_version:
+        description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+        required: false
+        default: 'latest'
+      gh_environment:
+        description: 'Specifies the GitHub deployment environment.'
+        required: false
+        default: 'development'
+      region:
+        description: 'Choose the AWS region to deploy to.'
+        required: true
+        default: 'us-east-2'
 
 jobs:
   Plan:
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
     with: 
-      gh_environment: eks_lab
+      tf_version: ${{ github.event.inputs.tf_version }}
+      gh_environment: ${{ github.event.inputs.gh_environment }}
+      region: ${{ github.event.inputs.region }}
     secrets:
-      cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+      cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   Apply:
     needs: Plan
     if: ${{ github.event.inputs.apply_flag == 'true' }}
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
     with:
-      gh_environment: eks_lab
+      tf_version: ${{ github.event.inputs.tf_version }}
+      gh_environment: ${{ github.event.inputs.gh_environment }}
+      region: ${{ github.event.inputs.region }}
     secrets:
-      cli_config_credentials_token: ${{ secrets.TFC_API_TOKEN }}
+      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
