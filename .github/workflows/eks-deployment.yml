@@ -10,7 +10,7 @@ on:
 
 jobs:
   Plan:
-    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_plan.yml@master
+    uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
     with: 
       gh_environment: eks_lab
     secrets:
@@ -19,7 +19,7 @@ jobs:
   Apply:
     needs: Plan
     if: ${{ github.event.inputs.apply_flag == 'true' }}
-    uses: David-Melamed/aws_launch_eks_cluster/.github/workflows/aws_tf_apply.yml@master
+    uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
     with:
       gh_environment: eks_lab
     secrets:
