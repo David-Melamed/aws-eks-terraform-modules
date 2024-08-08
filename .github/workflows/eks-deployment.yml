@@ -1,6 +1,8 @@
 name: "ProvisionEKSCluster"
 
 on:
+  pull_request:
+    types: [opened, reopened]
   workflow_dispatch:
     inputs:
       apply_flag:
@@ -18,8 +20,8 @@ on:
       region:
         description: 'Choose the AWS region to deploy to.'
         required: true
-        default: 'us-east-2'
-
+        default: 'eu-west-1'
+        
 jobs:
   Plan:
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
