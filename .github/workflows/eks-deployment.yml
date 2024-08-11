@@ -11,6 +11,7 @@
           options:
             - yes
             - no
+        apply_flag:
           description: 'Set to "true" to apply changes after plan'
           required: false
           default: 'false'
