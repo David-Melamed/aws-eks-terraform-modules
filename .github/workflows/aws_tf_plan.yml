@@ -2,6 +2,19 @@
 name: "Build_TF_Plan"
 on:
   workflow_call:
+    inputs:
+      tf_version:
+        description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+        required: true
+        type: string
+      gh_environment:
+        description: 'Specifies the GitHub deployment environment.'
+        required: true
+        type: string
+      region:
+        description: 'Choose the AWS region to deploy to.'
+        required: true
+        type: string
     secrets:
       cli_config_credentials_token:
         description: 'CLI config credentials token'
@@ -17,6 +30,7 @@ jobs:
   build-plan:
     name: "Terraform Plan"
     runs-on: ubuntu-latest
+    environment: ${{ inputs.gh_environment }}
     permissions:
       contents: read
       pull-requests: write
@@ -25,19 +39,19 @@ jobs:
         shell: bash    
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.1.0
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.aws_access_key_id }}
           aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ inputs.region }}
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v2.0.2
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          terraform_version: ${{ inputs.tf_version }}
           cli_config_credentials_token: ${{ secrets.cli_config_credentials_token }}
 
       - name: Terraform Init

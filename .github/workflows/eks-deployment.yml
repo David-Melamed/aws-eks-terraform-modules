@@ -1,3 +1,24 @@
+name: "ProvisionEKSCluster"
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply_flag:
+        description: 'Set to "true" to apply changes after plan'
+        required: true
+        default: 'false'
+      tf_version:
+        description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+        required: true
+      gh_environment:
+        description: 'Specifies the GitHub deployment environment.'
+        required: true
+      region:
+        description: 'Choose the AWS region to deploy to.'
+        required: true
+  pull_request:
+    types: [ready_for_review]
+
 jobs:
   Setup:
     runs-on: ubuntu-latest
