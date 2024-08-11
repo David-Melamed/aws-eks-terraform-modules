@@ -20,26 +20,10 @@
           required: false
           default: 'eu-west-1'
     pull_request:
-      types: [ready_for_review]
+      types: [opened, synchronize, reopened]
 
   jobs:
-    Setup:
-      runs-on: ubuntu-latest
-      environment: ${{ inputs.gh_environment }}
-      steps:
-        - name: Set environment variables
-          id: set_vars
-          run: |
-            echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-            echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-            echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_OUTPUT
-            echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_OUTPUT
-      outputs:
-        aws_access_key_id: ${{ steps.set_vars.outputs.aws_access_key_id }}
-        aws_secret_access_key: ${{ steps.set_vars.outputs.aws_secret_access_key }}
-
     Plan:
-      needs: Setup
       uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
       with: 
         tf_version: ${{ inputs.tf_version }}
@@ -47,14 +31,14 @@
         region: ${{ inputs.region }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
-        aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
-        aws_secret_access_key: ${{ needs.Setup.outputs.aws_secret_access_key }}
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       permissions:
         pull-requests: write
         contents: read
 
     Apply:
-      needs: [Setup, Plan]
+      needs: Plan
       if: ${{ inputs.apply_flag == 'true' }}
       uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
       with:
@@ -63,8 +47,8 @@
         region: ${{ inputs.region }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
-        aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
-        aws_secret_access_key: ${{ needs.Setup.outputs.aws_secret_access_key }}
+        aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       permissions:
         pull-requests: write
         contents: read
