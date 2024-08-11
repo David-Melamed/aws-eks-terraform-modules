@@ -27,10 +27,12 @@
           description: 'Choose the AWS region to deploy to.'
           required: false
           default: 'eu-west-1'
+    pull_request:
+      types: [opened, reopened]
 
   jobs:
     Plan:
-      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
+      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@feature/eks-deployment-cicd
       with: 
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
@@ -47,7 +49,7 @@
     Apply:
       needs: Plan
       if: ${{ inputs.apply_flag == 'true' }}
-      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
+      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@feature/eks-deployment-cicd
       with:
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
