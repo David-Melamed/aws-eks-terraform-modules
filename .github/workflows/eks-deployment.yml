@@ -4,6 +4,14 @@
     workflow_dispatch:
       inputs:
         apply_flag:
+        cluster_exists:
+          description: "Does the cluster already exist?"
+          required: true
+          default: "yes"
+          type: choice
+          options:
+            - yes
+            - no
           description: 'Set to "true" to apply changes after plan'
           required: false
           default: 'false'
@@ -19,8 +27,6 @@
           description: 'Choose the AWS region to deploy to.'
           required: false
           default: 'eu-west-1'
-    pull_request:
-      types: [opened, synchronize, reopened]
 
   jobs:
     Plan:
@@ -29,6 +35,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
+        cluster_exists: ${{ inputs.cluster_exists }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -45,6 +52,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
+        cluster_exists: ${{ inputs.cluster_exists }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}

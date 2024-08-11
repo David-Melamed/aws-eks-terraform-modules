@@ -15,6 +15,9 @@ on:
         description: 'Choose the AWS region to deploy to.'
         required: true
         type: string
+      cluster_exists:
+        required: true
+        type: string
     secrets:
       cli_config_credentials_token:
         description: 'CLI config credentials token'
@@ -56,7 +59,14 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: |
+          if [ "${{ inputs.cluster_exists }}" == "yes" ]; then
+            echo "Cluster exists - fetching s3 state by running terraform init -reconfigure."
+            terraform init -reconfigure
+          else
+            echo "Cluster does not exist - initializing new state by running terraform init -reconfigure -force-copy."
+            terraform init -reconfigure -force-copy
+          fi
       
       - name: Terraform Validate
         id: validate
