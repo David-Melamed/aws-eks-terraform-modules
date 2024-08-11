@@ -14,7 +14,7 @@
         gh_environment:
           description: 'Specifies the GitHub deployment environment.'
           required: false
-          default: 'dev'
+          default: 'development'
         region:
           description: 'Choose the AWS region to deploy to.'
           required: false
@@ -25,21 +25,24 @@
   jobs:
     Setup:
       runs-on: ubuntu-latest
-      environment: ${{ github.event.inputs.gh_environment }}
+      environment: ${{ inputs.gh_environment }}
       steps:
         - name: Set environment variables
           id: set_vars
           run: |
             echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
             echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+      outputs:
+        aws_access_key_id: ${{ steps.set_vars.outputs.aws_access_key_id }}
+        aws_secret_access_key: ${{ steps.set_vars.outputs.aws_secret_access_key }}
 
     Plan:
       needs: Setup
       uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
       with: 
-        tf_version: ${{ github.event.inputs.tf_version }}
-        gh_environment: ${{ github.event.inputs.gh_environment }}
-        region: ${{ github.event.inputs.region }}
+        tf_version: ${{ inputs.tf_version }}
+        gh_environment: ${{ inputs.gh_environment }}
+        region: ${{ inputs.region }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
@@ -50,12 +53,12 @@
 
     Apply:
       needs: [Setup, Plan]
-      if: ${{ github.event.inputs.apply_flag == 'true' }}
+      if: ${{ inputs.apply_flag == 'true' }}
       uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
       with:
-        tf_version: ${{ github.event.inputs.tf_version }}
-        gh_environment: ${{ github.event.inputs.gh_environment }}
-        region: ${{ github.event.inputs.region }}
+        tf_version: ${{ inputs.tf_version }}
+        gh_environment: ${{ inputs.gh_environment }}
+        region: ${{ inputs.region }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
