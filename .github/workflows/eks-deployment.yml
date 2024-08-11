@@ -33,7 +33,7 @@ jobs:
           echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY || env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_OUTPUT
 
   Plan:
-     needs: Setup
+    needs: Setup
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
     with: 
       tf_version: ${{ github.event.inputs.tf_version }}
