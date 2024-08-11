@@ -64,7 +64,7 @@ jobs:
             terraform init -reconfigure
           else
             echo "Cluster does not exist - initializing new state by running terraform init -reconfigure -force-copy."
-            terraform init -reconfigure -force-copy
+            terraform init -force-copy
           fi
       
       - name: Terraform Validate
