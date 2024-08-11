@@ -3,7 +3,6 @@
   on:
     workflow_dispatch:
       inputs:
-        apply_flag:
         cluster_exists:
           description: "Does the cluster already exist?"
           required: true
