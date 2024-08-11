@@ -55,7 +55,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -force-copy -auto-approve
       
       - name: Terraform Validate
         id: validate
