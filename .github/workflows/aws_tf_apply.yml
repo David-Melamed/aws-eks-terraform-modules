@@ -1,33 +1,51 @@
-### Reusable workflow to download terraform artifact built by `az_tf_plan` and apply the artifact/plan ###
+### Reusable workflow to download terraform artifact built by `tf_plan` and apply the artifact/plan ###
 name: "Apply_TF_Plan"
 on:
   workflow_call:
     inputs:
       tf_version:
         description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
-        required: false
+        required: true
         type: string
-        default: latest
       gh_environment:
         description: 'Specifies the GitHub deployment environment.'
-        required: false
+        required: true
         type: string
-        default: null
+      region:
+        description: 'Choose the AWS region to deploy to.'
+        required: true
+        type: string
     secrets:
       cli_config_credentials_token:
-        description: 'cli config credentials token'
+        description: 'CLI config credentials token'
+        required: true
+      aws_access_key_id:
+        description: 'AWS Access Key ID'
+        required: true
+      aws_secret_access_key:
+        description: 'AWS Secret Access Key'
         required: true
 
 jobs:
   apply-plan:
     runs-on: ubuntu-latest
     environment: ${{ inputs.gh_environment }}
+    permissions:
+      contents: read
+      pull-requests: write
     defaults:
       run:
         shell: bash
     steps:
       - name: Checkout
         uses: actions/checkout@v3.1.0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: ${{ inputs.region }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2.0.2
@@ -42,15 +60,6 @@ jobs:
       - name: Terraform Validate
         id: validate
         run: terraform validate
-
-      - name: Terraform Plan
-        id: plan
-        run: terraform plan
-        continue-on-error: true
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
