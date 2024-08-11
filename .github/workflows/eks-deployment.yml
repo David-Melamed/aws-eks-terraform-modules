@@ -32,6 +32,8 @@
           run: |
             echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
             echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+            echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_OUTPUT
+            echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_OUTPUT
       outputs:
         aws_access_key_id: ${{ steps.set_vars.outputs.aws_access_key_id }}
         aws_secret_access_key: ${{ steps.set_vars.outputs.aws_secret_access_key }}
