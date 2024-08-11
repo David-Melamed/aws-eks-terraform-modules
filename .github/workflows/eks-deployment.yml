@@ -1,26 +1,18 @@
-name: "ProvisionEKSCluster"
-
-on:
-  workflow_dispatch:
-    inputs:
-      apply_flag:
-        description: 'Set to "true" to apply changes after plan'
-        required: true
-        default: 'false'
-      tf_version:
-        description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
-        required: true
-      gh_environment:
-        description: 'Specifies the GitHub deployment environment.'
-        required: true
-      region:
-        description: 'Choose the AWS region to deploy to.'
-        required: true
-  pull_request:
-    types: [opened, reopened]
-
 jobs:
+  Setup:
+    runs-on: ubuntu-latest
+    outputs:
+      aws_access_key_id: ${{ steps.set_vars.outputs.aws_access_key_id }}
+      aws_secret_access_key: ${{ steps.set_vars.outputs.aws_secret_access_key }}
+    steps:
+      - name: Set environment variables
+        id: set_vars
+        run: |
+          echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID || env.AWS_ACCESS_KEY_ID }}" >> $GITHUB_OUTPUT
+          echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY || env.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_OUTPUT
+
   Plan:
+    needs: Setup
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
     with: 
       tf_version: ${{ github.event.inputs.tf_version }}
@@ -28,14 +20,14 @@ jobs:
       region: ${{ github.event.inputs.region }}
     secrets:
       cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
-      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
+      aws_secret_access_key: ${{ needs.Setup.outputs.aws_secret_access_key }}
     permissions:
       pull-requests: write
       contents: read
 
   Apply:
-    needs: Plan
+    needs: [Setup, Plan]
     if: ${{ github.event.inputs.apply_flag == 'true' }}
     uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
     with:
@@ -43,9 +35,9 @@ jobs:
       gh_environment: ${{ github.event.inputs.gh_environment }}
       region: ${{ github.event.inputs.region }}
     secrets:
-      aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
+      aws_access_key_id: ${{ needs.Setup.outputs.aws_access_key_id }}
+      aws_secret_access_key: ${{ needs.Setup.outputs.aws_secret_access_key }}
     permissions:
       pull-requests: write
       contents: read
