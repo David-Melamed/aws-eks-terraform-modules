@@ -5,7 +5,7 @@
       inputs:
         apply_flag:
           description: 'Set to "true" to apply changes after plan'
-          required: true
+          required: false
           default: 'false'
         tf_version:
           description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
