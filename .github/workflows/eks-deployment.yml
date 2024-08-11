@@ -24,7 +24,7 @@
 
   jobs:
     Plan:
-      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@master
+      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_plan.yml@${{ github.head_ref }}
       with: 
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
@@ -40,7 +40,7 @@
     Apply:
       needs: Plan
       if: ${{ inputs.apply_flag == 'true' }}
-      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@master
+      uses: David-Melamed/aws-eks-terraform-modules/.github/workflows/aws_tf_apply.yml@${{ github.head_ref }}
       with:
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
