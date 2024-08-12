@@ -64,8 +64,8 @@ jobs:
             echo "Cluster exists - fetching s3 state by running terraform init -reconfigure."
             terraform init -reconfigure
           else
-            echo "Cluster does not exist - initializing new state by running terraform init -reconfigure -force-copy."
-            terraform init -reconfigure -force-copy
+            echo "Cluster does not exist - initializing new state by running terraform init -force-copy."
+            terraform init -force-copy
           fi
       
       - name: Check backend.tf File
