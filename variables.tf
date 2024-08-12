@@ -20,7 +20,7 @@ variable "cluster_iam_username" {
 }
 
 variable "create_state" {
-  description = "Boolean to indicate if state resources should be created"
+  description = "Indicate if state resources should be created"
   type = string
-  default = "false"
+  default = "true"
 }
