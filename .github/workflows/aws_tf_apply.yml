@@ -50,6 +50,14 @@ jobs:
           terraform_version: ${{ inputs.tf_version }}
           cli_config_credentials_token: ${{ secrets.cli_config_credentials_token }}
 
+      - name: Install kubectl (latest version)
+        id: kubectl
+        run: curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+      - name: Install ArgoCD
+        id: argocd
+        run: curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+
       - name: Terraform Init
         id: init
         run: terraform init
@@ -59,7 +67,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -target module.vpc -var="create_state=${{ inputs.create_state }}"
+        run: terraform apply -auto-approve -var="create_state=${{ inputs.create_state }}"
 
       - name: Terraform State Copy
         id: init-state-copy
