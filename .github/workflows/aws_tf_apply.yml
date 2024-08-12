@@ -4,29 +4,23 @@ on:
   workflow_call:
     inputs:
       tf_version:
-        description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
         required: true
         type: string
       gh_environment:
-        description: 'Specifies the GitHub deployment environment.'
         required: true
         type: string
       region:
-        description: 'Choose the AWS region to deploy to.'
         required: true
         type: string
       create_state:
         required: true
-        type: boolean
+        type: string
     secrets:
       cli_config_credentials_token:
-        description: 'CLI config credentials token'
         required: true
       aws_access_key_id:
-        description: 'AWS Access Key ID'
         required: true
       aws_secret_access_key:
-        description: 'AWS Secret Access Key'
         required: true
 
 jobs:
