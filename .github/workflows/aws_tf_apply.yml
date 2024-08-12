@@ -68,7 +68,7 @@ jobs:
         run: terraform apply -auto-approve -target module.vpc -var="create_state=${{ inputs.create_state }}"
 
       - name: Terraform State Copy
-        id: init
+        id: init-state-copy
         run: |
             terraform init -force-copy
 

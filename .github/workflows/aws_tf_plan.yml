@@ -70,10 +70,10 @@ jobs:
         run: terraform plan -var="create_state=${{ inputs.create_state }}"
 
       - name: Terraform State Copy
-        id: init
+        id: init-state-copy
         run: |
             terraform init -force-copy
-            
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
