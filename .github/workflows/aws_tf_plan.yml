@@ -15,9 +15,9 @@ on:
         description: 'Choose the AWS region to deploy to.'
         required: true
         type: string
-      cluster_exists:
+      create_state:
         required: true
-        type: string
+        type: boolean
     secrets:
       cli_config_credentials_token:
         description: 'CLI config credentials token'
@@ -67,8 +67,13 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan
+        run: terraform plan -var="create_state=${{ inputs.create_state }}"
 
+      - name: Terraform State Copy
+        id: init
+        run: |
+            terraform init -force-copy
+            
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1

@@ -3,14 +3,14 @@
   on:
     workflow_dispatch:
       inputs:
-        cluster_exists:
-          description: "Does the cluster already exist?"
+        create_state:
+          description: "New state?"
           required: true
-          default: "yes"
+          default: "false"
           type: choice
           options:
-            - yes
-            - no
+            - "true"
+            - "false"
         apply_flag:
           description: 'Set to "true" to apply changes after plan'
           required: false
@@ -54,7 +54,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
-        cluster_exists: ${{ inputs.cluster_exists }}
+        create_state: ${{ inputs.create_state }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}

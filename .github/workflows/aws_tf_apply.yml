@@ -65,7 +65,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -target module.vpc
+        run: terraform apply -auto-approve -target module.vpc -var="create_state=${{ inputs.create_state }}"
 
       - name: Terraform State Copy
         id: init
