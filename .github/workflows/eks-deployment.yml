@@ -12,19 +12,19 @@
             - "true"
             - "false"
         apply_flag:
-          description: 'Set to "true" to apply changes after plan'
+          description: 'Set to "true" to apply changes after plan (default=false)'
           required: false
           default: 'false'
         tf_version:
-          description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+          description: 'Specifies version of Terraform to use. e.g: 1.1.0 (default=latest)'
           required: false
           default: 'latest'
         gh_environment:
-          description: 'Specifies the GitHub deployment environment.'
+          description: 'Specifies the GitHub deployment environment (default=development)'
           required: false
           default: 'development'
         region:
-          description: 'Choose the AWS region to deploy to.'
+          description: 'Choose the AWS region to deploy to (default=eu-west-1)'
           required: false
           default: 'eu-west-1'
     pull_request:
