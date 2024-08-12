@@ -58,14 +58,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: |
-          if [ "${{ inputs.cluster_exists }}" == "yes" ]; then
-            echo "Cluster exists - fetching s3 state by running terraform init -reconfigure."
-            terraform init -reconfigure
-          else
-            echo "Cluster does not exist - initializing new state by running terraform init -force-copy."
-            terraform init -force-copy
-          fi
+        run: terraform init
 
       - name: Terraform Validate
         id: validate
@@ -73,6 +66,11 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve -target module.vpc
+
+      - name: Terraform State Copy
+        id: init
+        run: |
+            terraform init -force-copy
 
       - name: Terraform Destroy
         run: terraform destroy -auto-approve

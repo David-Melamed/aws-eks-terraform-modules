@@ -59,24 +59,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: |
-          if [ "${{ inputs.cluster_exists }}" == "yes" ]; then
-            echo "Cluster exists - fetching s3 state by running terraform init -reconfigure."
-            terraform init -reconfigure
-          else
-            echo "Cluster does not exist - initializing new state by running terraform init -force-copy."
-            terraform init -force-copy
-          fi
-      
-      - name: Check backend.tf File
-        run: |
-          sleep 20
-          if [ -f "backend.tf" ]; then
-            echo "backend.tf file exists."
-            cat backend.tf
-          else
-            echo "backend.tf file does not exist."
-          fi
+        run: terraform init
 
       - name: Terraform Validate
         id: validate
