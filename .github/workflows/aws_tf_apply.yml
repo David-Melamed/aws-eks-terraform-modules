@@ -15,9 +15,9 @@ on:
         description: 'Choose the AWS region to deploy to.'
         required: true
         type: string
-      cluster_exists:
+      create_state:
         required: true
-        type: string
+        type: boolean
     secrets:
       cli_config_credentials_token:
         description: 'CLI config credentials token'
