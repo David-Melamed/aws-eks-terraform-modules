@@ -70,6 +70,7 @@ jobs:
       
       - name: Check backend.tf File
         run: |
+          sleep 20
           if [ -f "backend.tf" ]; then
             echo "backend.tf file exists."
             cat backend.tf
