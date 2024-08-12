@@ -14,11 +14,11 @@ module "terraform_state_backend" {
   force_destroy                      = false
 
   # S3 Bucket configuration
-  bucket_enabled = false
+  bucket_enabled = var.create_state
   s3_bucket_name = local.bucket_name
 
   # DynamoDB Table configuration
-  dynamodb_enabled = false
+  dynamodb_enabled = var.create_state
   dynamodb_table_name = local.dynamodb_tfstate_table_name
   deletion_protection_enabled = true
 

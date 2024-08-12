@@ -18,3 +18,9 @@ variable "cluster_iam_username" {
   type        = list(string)
   default     = ["eksadmin", "davideks"]
 }
+
+variable "create_state" {
+  description = "Boolean to indicate if state resources should be created"
+  type = string
+  default = "false"
+}

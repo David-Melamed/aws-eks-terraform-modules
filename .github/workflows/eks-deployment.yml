@@ -3,28 +3,28 @@
   on:
     workflow_dispatch:
       inputs:
-        cluster_exists:
-          description: "Does the cluster already exist?"
+        create_state:
+          description: "New state?"
           required: true
-          default: "yes"
+          default: "false"
           type: choice
           options:
-            - yes
-            - no
+            - "true"
+            - "false"
         apply_flag:
-          description: 'Set to "true" to apply changes after plan'
+          description: 'Set to "true" to apply changes after plan (default=false)'
           required: false
           default: 'false'
         tf_version:
-          description: 'Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+          description: 'Specifies version of Terraform to use. e.g: 1.1.0 (default=latest)'
           required: false
           default: 'latest'
         gh_environment:
-          description: 'Specifies the GitHub deployment environment.'
+          description: 'Specifies the GitHub deployment environment (default=development)'
           required: false
           default: 'development'
         region:
-          description: 'Choose the AWS region to deploy to.'
+          description: 'Choose the AWS region to deploy to (default=eu-west-1)'
           required: false
           default: 'eu-west-1'
     pull_request:
@@ -37,7 +37,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
-        cluster_exists: ${{ inputs.cluster_exists }}
+        create_state: ${{ inputs.create_state }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -54,7 +54,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
-        cluster_exists: ${{ inputs.cluster_exists }}
+        create_state: ${{ inputs.create_state }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
