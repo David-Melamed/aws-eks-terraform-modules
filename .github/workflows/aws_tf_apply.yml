@@ -72,4 +72,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -target module.vpc 
+        run: terraform apply -auto-approve -target module.vpc
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
