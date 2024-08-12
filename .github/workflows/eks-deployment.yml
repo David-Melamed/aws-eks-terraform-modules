@@ -28,7 +28,7 @@
           required: false
           default: 'eu-west-1'
     pull_request:
-      types: [opened, reopened]
+      types: [opened, synchronize, reopened]
 
   jobs:
     Plan:
