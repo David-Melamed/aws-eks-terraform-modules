@@ -37,7 +37,7 @@
         tf_version: ${{ inputs.tf_version }}
         gh_environment: ${{ inputs.gh_environment }}
         region: ${{ inputs.region }}
-        cluster_exists: ${{ inputs.cluster_exists }}
+        create_state: ${{ inputs.create_state }}
       secrets:
         cli_config_credentials_token: ${{ secrets.EKS_TFC_API_TOKEN }}
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
